@@ -295,30 +295,32 @@ void resetTimer(){
       });
 
     }
-    if( !winnerIs && filledBox == 9){
+     if( !winnerIs && filledBox == 9){
       setState(() {
         resultDeclaration= 'No body wins!';
       });
     }
     
   }
-   void _updateScore(String winner){
-      if(winner == 'O'){
-        oScore++;
-      } else if (winner == 'x'){
-        xScore++;
+   void _updateScore(String winner) {
+  if (winner == 'O') {
+    oScore++;
+  } else if (winner == 'X') { // Use uppercase 'X'
+    xScore++;
+  }
+  winnerIs = true;
+}
+    void _clearBoard() {
+  setState(() {
+    for (int i = 0; i < 9; i++) {
+      displayXO[i] = '';
+    }
+    match_Index.clear(); // Clear the winning indices
+  });
+  filledBox = 0; // Reset filled boxes counter
+  winnerIs = false; // Reset winner flag
+}
 
-      }
-      winnerIs=true;
-    }
-    void _clearBoard(){
-      setState(() {
-        for(int i=0; i<9; i++ ){
-          displayXO[i]='';
-        }
-      });
-      filledBox=0; // as reset box
-    }
     Widget _buildTimer(){
       final isRunning = timer == null ? false : timer!.isActive;
       
