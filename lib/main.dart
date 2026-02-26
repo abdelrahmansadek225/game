@@ -1,18 +1,28 @@
 import 'package:flutter/material.dart';
-import 'package:game/screen/game.dart';
+import 'package:device_preview/device_preview.dart';
+import 'screen/game.dart';
 
 void main() {
-  runApp(const MainApp());
+  runApp(
+    DevicePreview(
+      enabled: true, // خليها true على Web
+      builder: (context) => const MyApp(),
+    ),
+  );
 }
 
-class MainApp extends StatelessWidget {
-  const MainApp({super.key});
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: GameScreen(),
+      // ignore: deprecated_member_use
+      useInheritedMediaQuery: true,
+      locale: DevicePreview.locale(context),
+      builder: DevicePreview.appBuilder,
+      home: const GameScreen(),
     );
   }
 }
