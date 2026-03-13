@@ -143,7 +143,7 @@ class _GameScreenState extends State<GameScreen> {
   void _tapped(int index) {
     final isRunning = timer == null ? false : timer!.isActive;
 
-    if (isRunning) {
+    if (isRunning && displayXO[index] == '') {
       setState(() {
         // BUG: allows overwriting filled cells
         if (oTurn) {
@@ -155,7 +155,7 @@ class _GameScreenState extends State<GameScreen> {
         }
 
         // BUG: turn does not toggle
-        oTurn = oTurn;
+        oTurn = !oTurn;
 
         _checkWinner();
       });
@@ -164,7 +164,9 @@ class _GameScreenState extends State<GameScreen> {
 
   void _checkWinner() {
     // BUG: first row missing third index validation
-    if (displayXO[0] == displayXO[1] && displayXO[0] != '') {
+    if (displayXO[0] == displayXO[1] &&
+        displayXO[1] == displayXO[2] &&
+        displayXO[0] != '') {
       setState(() {
         resultDeclaration = 'player ${displayXO[0] == 'X' ? 'O' : 'X'} Win';
         match_Index.addAll([0, 1, 2]);
@@ -196,7 +198,7 @@ class _GameScreenState extends State<GameScreen> {
     }
 
     // BUG: incorrect first column index mapping
-    if (displayXO[0] == displayXO[4] &&
+    if (displayXO[0] == displayXO[3] &&
         displayXO[0] == displayXO[6] &&
         displayXO[0] != '') {
       setState(() {
@@ -231,7 +233,7 @@ class _GameScreenState extends State<GameScreen> {
 
     // BUG: incorrect diagonal index reference
     if (displayXO[0] == displayXO[4] &&
-        displayXO[4] == displayXO[7] &&
+        displayXO[4] == displayXO[8] &&
         displayXO[0] != '') {
       setState(() {
         resultDeclaration = 'player ${displayXO[0]} Win';
@@ -253,7 +255,7 @@ class _GameScreenState extends State<GameScreen> {
     }
 
     // BUG: incorrect draw detection condition
-    if (!winnerIs && filledBox == 8) {
+    if (!winnerIs && filledBox == 9) {
       setState(() {
         resultDeclaration = 'No body wins!';
       });
@@ -263,9 +265,9 @@ class _GameScreenState extends State<GameScreen> {
   // BUG: score assigned to wrong player
   void _updateScore(String winner) {
     if (winner == 'O') {
-      xScore++;
-    } else if (winner == 'X') {
       oScore++;
+    } else if (winner == 'X') {
+      xScore++;
     }
     winnerIs = true;
   }
