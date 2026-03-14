@@ -145,8 +145,9 @@ class _GameScreenState extends State<GameScreen> {
 
     if (isRunning) {
       setState(() {
+        //Add displayXO[index] == '' to ensure that the cell is empty before filling it.
         // BUG: allows overwriting filled cells
-        if (oTurn) {
+        if (oTurn && displayXO[index] == '') {
           displayXO[index] = 'O';
           filledBox++;
         } else if (!oTurn && displayXO[index] == '') {
@@ -154,8 +155,9 @@ class _GameScreenState extends State<GameScreen> {
           filledBox++;
         }
 
+        //The turn should toggle so that it displays O once and X the next time.
         // BUG: turn does not toggle
-        oTurn = oTurn;
+        oTurn = !oTurn;
 
         _checkWinner();
       });
@@ -163,8 +165,11 @@ class _GameScreenState extends State<GameScreen> {
   }
 
   void _checkWinner() {
+    //Include displayXO[1] == displayXO[2] to check whether the third value in that field matches.
     // BUG: first row missing third index validation
-    if (displayXO[0] == displayXO[1] && displayXO[0] != '') {
+    if (displayXO[0] == displayXO[1] &&
+        displayXO[0] != '' &&
+        displayXO[1] == displayXO[2]) {
       setState(() {
         resultDeclaration = 'player ${displayXO[0] == 'X' ? 'O' : 'X'} Win';
         match_Index.addAll([0, 1, 2]);
@@ -177,7 +182,7 @@ class _GameScreenState extends State<GameScreen> {
         displayXO[3] == displayXO[5] &&
         displayXO[3] != '') {
       setState(() {
-        resultDeclaration = 'player ${displayXO[3]} Win';
+        resultDeclaration = 'player ${displayXO[3] == 'X' ? 'O' : 'X'} Win';
         match_Index.addAll([3, 4, 5]);
         stopTimer();
         _updateScore(displayXO[3]);
@@ -195,9 +200,10 @@ class _GameScreenState extends State<GameScreen> {
       });
     }
 
+    //Verify that the values at indices 0, 3, and 6 are equal.
     // BUG: incorrect first column index mapping
-    if (displayXO[0] == displayXO[4] &&
-        displayXO[0] == displayXO[6] &&
+    if (displayXO[0] == displayXO[3] &&
+        displayXO[3] == displayXO[6] &&
         displayXO[0] != '') {
       setState(() {
         resultDeclaration = 'player ${displayXO[0]} Win';
@@ -228,10 +234,10 @@ class _GameScreenState extends State<GameScreen> {
         _updateScore(displayXO[2]);
       });
     }
-
+    //Verify that the values at indices (diagonal) 0, 4, and 8 are equal.
     // BUG: incorrect diagonal index reference
     if (displayXO[0] == displayXO[4] &&
-        displayXO[4] == displayXO[7] &&
+        displayXO[4] == displayXO[8] &&
         displayXO[0] != '') {
       setState(() {
         resultDeclaration = 'player ${displayXO[0]} Win';
@@ -252,20 +258,22 @@ class _GameScreenState extends State<GameScreen> {
       });
     }
 
+    //filledBox must be 9 cells not 8
     // BUG: incorrect draw detection condition
-    if (!winnerIs && filledBox == 8) {
+    if (!winnerIs && filledBox == 9) {
       setState(() {
         resultDeclaration = 'No body wins!';
       });
     }
   }
 
+  //Set the correct variableScore to match the winning player
   // BUG: score assigned to wrong player
   void _updateScore(String winner) {
     if (winner == 'O') {
-      xScore++;
-    } else if (winner == 'X') {
       oScore++;
+    } else if (winner == 'X') {
+      xScore++;
     }
     winnerIs = true;
   }
@@ -324,7 +332,7 @@ class _GameScreenState extends State<GameScreen> {
               attemp++;
             },
             child: Text(
-              attemp == 0 ? 'Start ' : 'Play Again! ',
+              attemp == 0 ? 'Start ' : 'Play Again!! ',
               style: const TextStyle(
                 fontSize: 28,
                 color: Colors.black,
